@@ -1,0 +1,16 @@
+Package: rlox
+Title: Interpreter for lox programming language in R
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Robert",
+           family = "Zamora",
+           role = c("aut", "cre"),
+           email = "zamora.rr@gmail.com")
+Description: rlox is an interpreter for the lox programming language
+    written in R.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Language: en-US
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
