@@ -1,3 +1,6 @@
+#' Tokenize source code
+#'
+#' @param src character vector of lox source code
 scan_tokens <- function(src) {
   stopifnot(is.character(src))
   stopifnot(length(src) == 1)
@@ -8,7 +11,7 @@ scan_tokens <- function(src) {
   while (nchar(s) > 0) {
     # match token
     m <- match_token(s)
-    if (m == -1) stop(sprintf("invalid token [%s]", s), call. = FALSE)
+    if (m == -1) lox_error(line, sprintf("invalid syntax '%s'", s))
 
     # get lexeme
     lexeme <- regmatches(s, m)
@@ -45,9 +48,10 @@ scan_tokens <- function(src) {
     if (is.null(type)) {
       if (substr(lexeme,1,1) == "\"") {
         type <- token_type$STRING
-        literal <- substr(lexeme, 2, nchar(lexeme) -1)
+        literal <- substr(lexeme, 2, nchar(lexeme) - 1)
       } else if (substr(lexeme,1,1) %in% c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) {
         type <- token_type$NUMBER
+        literal <- lexeme
       } else if (substr(lexeme,1,2) == "//") {
         type <- token_type$COMMENT
       } else if (grepl("^[[:alnum:]_]+$", lexeme)) {
@@ -66,7 +70,7 @@ scan_tokens <- function(src) {
 
     # check if still null
     if (is.null(type)) {
-      stop(sprintf("invalid token %s", lexeme), call. = FALSE)
+      lox_error(line, sprintf("invalid token %s", lexeme))
     }
 
     # skip if whitespace
@@ -76,12 +80,17 @@ scan_tokens <- function(src) {
     tkn <- token(type, lexeme, literal, line)
     tokens <- c(tokens, list(tkn))
   }
+
+  # add the end of file token
+  tokens <- c(tokens,list(token(token_type$EOF, "", "", line)))
+
+  # return
   tokens
 }
 
 match_token <- function(x) {
   pattern_single <- "[(){},.+;*-]"
-  pattern_dual <- "!=|==|>=|<="
+  pattern_dual <- "(?:!=|==|>=|<=)"
   pattern_single_sometimes <- "[!=></]"
   pattern_whitespace <- "\\s+|\n|\r|\t"
   pattern_number <- "[0-9]+\\.?[0-9]*"
