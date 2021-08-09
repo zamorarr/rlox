@@ -24,3 +24,27 @@ token_type <- create_enum(c(
 
   "EOF", "WHITESPACE", "COMMENT"
 ))
+
+token_symbol <- list(
+  # single character
+  "LEFT_PAREN" = "(",
+  "RIGHT_PAREN" = ")",
+  "LEFT_BRACE" = "{",
+  "RIGHT_BRACE" = "}",
+  "COMMA" = ",",
+  "DOT" = ".",
+  "MINUS" = "-",
+  "PLUS" = "+",
+  "SEMICOLON" = ";",
+  "SLASH" = "/",
+  "STAR" = "*",
+  # single or double character
+  "BANG" = "!",
+  "BANG_EQUAL" = "!=",
+  "EQUAL" = "=",
+  "EQUAL_EQUAL" = "==",
+  "GREATER" = ">",
+  "GREATER_EQUAL" = ">=",
+  "LESS" = "<",
+  "LESS_EQUAL" = "<="
+)

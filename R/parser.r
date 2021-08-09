@@ -125,13 +125,8 @@ parse_primary <- function(tokens) {
     tokens <- r$tokens
     expr <- expr_grouping(r$expr)
 
-    # something else here to check for closing parent
-    if (tokens[[1]]$type != token_type$RIGHT_PAREN) {
-      token <- tokens[[1]]
-      lox_parser_error("Expected ')'", token$line)
-    } else {
-      tokens <- tokens[-1]
-    }
+    # check for closing paren
+    tokens <- consume(tokens, token_type$RIGHT_PAREN)
 
     # return
     return(list(expr = expr, tokens = tokens))
@@ -140,4 +135,16 @@ parse_primary <- function(tokens) {
   # otherwise no idea
   token <- tokens[[1]]
   lox_parser_error(sprintf("cannot parse token `%s`", token$lexeme), token$line)
+}
+
+#' Consume first token if it matches type
+consume <- function(tokens, type) {
+  token <- tokens[[1]]
+  if (token$type != type) {
+    msg <- sprintf("Expected '%s'", token_symbol[[type]])
+    lox_parser_error(msg, token$line)
+  }
+
+  # return tokens
+  tokens[-1]
 }
