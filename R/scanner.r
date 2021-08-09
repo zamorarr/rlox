@@ -11,7 +11,7 @@ scan_tokens <- function(src) {
   while (nchar(s) > 0) {
     # match token
     m <- match_token(s)
-    if (m == -1) lox_error(line, sprintf("invalid syntax '%s'", s))
+    if (m == -1) lox_scanner_error(sprintf("invalid syntax '%s'", s), line)
 
     # get lexeme
     lexeme <- regmatches(s, m)
@@ -51,7 +51,7 @@ scan_tokens <- function(src) {
         literal <- substr(lexeme, 2, nchar(lexeme) - 1)
       } else if (substr(lexeme,1,1) %in% c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")) {
         type <- token_type$NUMBER
-        literal <- lexeme
+        literal <- as.double(lexeme)
       } else if (substr(lexeme,1,2) == "//") {
         type <- token_type$COMMENT
       } else if (grepl("^[[:alnum:]_]+$", lexeme)) {
@@ -70,7 +70,7 @@ scan_tokens <- function(src) {
 
     # check if still null
     if (is.null(type)) {
-      lox_error(line, sprintf("invalid token %s", lexeme))
+      lox_scanner_error(sprintf("invalid token %s", lexeme), line)
     }
 
     # skip if whitespace

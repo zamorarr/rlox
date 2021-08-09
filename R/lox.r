@@ -21,32 +21,44 @@ run_file.lox <- function(obj, path) {
   #src <- paste(readLines(path), collapse = "\n")
   src <- readChar(path, file.info(path)$size)
   obj <- run.lox(obj, src)
-  if (obj$had_error) stop()
+  if (obj$had_error) stop() # exit 65
+  # if(obj$had_runtime_error) quit(save = "no", status = 70)
 }
 
 run_prompt <- function(obj) UseMethod("run_prompt")
 run_prompt.lox <- function(obj) {
   is_interactive <- interactive()
+  if (!is_interactive) stop("rlox prompt must be run in interactive mode")
   while(TRUE) {
-    if (is_interactive) {
-      line <- readline("(lox) > ")
-    }  else {
-      #cat("(lox) > ")
-      #line <- readLines(n = 1)
-      stop("rlox prompt must be run in interactive mode")
-    }
+    #cat("(lox) > ")
+    #line <- readLines(n = 1)
+    # read line
+    line <- readline("(lox) > ")
 
+    # check if line is blank (to indicate a quit)
     if (is.null(line) || length(line) < 1) break
+
+    # try and run line
     obj <- tryCatch(
-      error = function(cnd) {
-        msg <- conditionMessage(cnd)
-        cat(msg, "\n")
+      # statement
+      run.lox(obj, line),
+
+      # runtime errors
+      runtime_error = function(cnd) {
+        message(conditionMessage(cnd))
         obj$had_error <- TRUE
         obj
       },
-      run.lox(obj, line)
+
+      # other errors
+      error = function(cnd) {
+        message(conditionMessage(cnd))
+        obj$had_error <- TRUE
+        obj
+      }
     )
 
+    # reset error flag (so interpreter can continue)
     obj$had_error <- FALSE
   }
 }
@@ -55,44 +67,10 @@ run <- function(obj, line) UseMethod("run")
 run.lox <- function(obj, line) {
   # scan tokens
   tokens <- scan_tokens(line)
-  p <- parse_expression(tokens)
-  expr <- p$expr
-
-  # print tokens
-  #for (token in tokens) {
-  #  cat(format(token), "\n")
-  #}
-  print(expr)
+  x <- parse_expression(tokens)
+  interpret(x$expr)
 
   # return object
   obj
 }
 
-error <- function(obj, line, msg) UseMethod("error")
-error.lox <- function(obj, line, msg) {
-  report.lox(obj, line, "", msg)
-}
-
-report <- function(obj, line, where, msg) UseMethod("report")
-report.lox <- function(obj, line, where, msg) {
-  cat(sprintf("[line %i] Error %s: %s", line, where, msg))
-  lox$had_error <- TRUE
-  lox
-}
-
-lox_error <- function(line, msg) {
-  lox_report(line, msg)
-}
-
-lox_report <- function(line, msg, where = "") {
-  msg <- sprintf("[line %i] %s %s", line, where, msg)
-  stop(msg, call. = FALSE)
-}
-
-lox_error2 <- function(.subclass, message, call = NULL, ...) {
-  err <- structure(
-    list(message = message, call = call, ...),
-    class = c(.subclass, "error", "condition")
-    )
-  stop(err$message, call. = FALSE)
-}

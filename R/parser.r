@@ -6,7 +6,6 @@ parse_expression <- function(tokens) {
 parse_equality <- function(tokens) {
   #cat("parse_equality\n")
   left <- parse_comparison(tokens)
-
   expr <- left$expr
   tokens <- left$tokens
 
@@ -25,7 +24,6 @@ parse_equality <- function(tokens) {
 parse_comparison <- function(tokens) {
   #cat("parse_comparison\n")
   left <- parse_term(tokens)
-
   expr <- left$expr
   tokens <- left$tokens
 
@@ -44,8 +42,6 @@ parse_comparison <- function(tokens) {
 parse_term <- function(tokens) {
   #cat("parse_term\n")
   left <- parse_factor(tokens)
-
-  # get next token
   expr <- left$expr
   tokens <- left$tokens
 
@@ -131,7 +127,8 @@ parse_primary <- function(tokens) {
 
     # something else here to check for closing parent
     if (tokens[[1]]$type != token_type$RIGHT_PAREN) {
-      stop("Expected ')' after expression", call. = FALSE)
+      token <- tokens[[1]]
+      lox_parser_error("Expected ')'", token$line)
     } else {
       tokens <- tokens[-1]
     }
@@ -141,5 +138,6 @@ parse_primary <- function(tokens) {
   }
 
   # otherwise no idea
-  stop(sprintf("cannot parse token: %s", format(tokens[[1]])))
+  token <- tokens[[1]]
+  lox_parser_error(sprintf("cannot parse token `%s`", token$lexeme), token$line)
 }
