@@ -1,3 +1,48 @@
+parse_lox <- function(tokens) {
+  # initialize output
+  statements <- list()
+
+  i <- 1L
+  while(length(tokens) > 1) {
+    p <- parse_statement(tokens)
+    statements[[i]] <- p$stmt
+    tokens <- p$tokens
+    i <- i + 1L
+  }
+
+  # return output
+  statements
+}
+
+parse_statement <- function(tokens) {
+  # check for unary operators
+  token <- tokens[[1]]
+  if (token$type == token_type$PRINT) {
+    return(parse_stmt_print(tokens[-1]))
+  }
+
+  # parse as primary expression
+  parse_stmt_expression(tokens)
+}
+
+parse_stmt_print <- function(tokens) {
+  p <- parse_expression(tokens)
+  expr <- p$expr
+  tokens <- p$tokens
+
+  tokens <- consume(tokens, token_type$SEMICOLON)
+  list(stmt = stmt_print(expr), tokens = tokens)
+}
+
+parse_stmt_expression <- function(tokens) {
+  p <- parse_expression(tokens)
+  expr <- p$expr
+  tokens <- p$tokens
+
+  tokens <- consume(tokens, token_type$SEMICOLON)
+  list(stmt = stmt_expression(expr), tokens = tokens)
+}
+
 parse_expression <- function(tokens) {
   #cat("parse_expression\n")
   parse_equality(tokens)

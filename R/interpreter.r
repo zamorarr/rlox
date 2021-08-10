@@ -1,11 +1,23 @@
-interpret <- function(x) {
-  value <- evaluate(x)
+interpret <- function(statements) {
+  for (statement in statements) {
+    evaluate(statement)
+  }
+}
+
+#' @export
+evaluate <- function(x) UseMethod("evaluate")
+
+#' @export
+evaluate.lox_stmt_print <- function(x) {
+  value <- evaluate(x$expression)
   if (is.logical(value)) value <- tolower(as.character(value))
   cat(as.character(value), "\n")
 }
 
 #' @export
-evaluate <- function(x) UseMethod("evaluate")
+evaluate.lox_stmt_expression <- function(x) {
+  evaluate(x$expression)
+}
 
 #' @export
 evaluate.lox_expr_literal <- function(x) {
