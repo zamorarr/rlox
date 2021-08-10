@@ -4,7 +4,7 @@ parse_lox <- function(tokens) {
 
   i <- 1L
   while(length(tokens) > 1) {
-    p <- parse_statement(tokens)
+    p <- parse_declaration(tokens)
     statements[[i]] <- p$stmt
     tokens <- p$tokens
     i <- i + 1L
@@ -14,14 +14,37 @@ parse_lox <- function(tokens) {
   statements
 }
 
-parse_statement <- function(tokens) {
-  # check for unary operators
+parse_declaration <- function(tokens) {
+  token <- tokens[[1]]
+  if (token$type == token_type$VAR) {
+    return(parse_vardeclaration(tokens[-1]))
+  }
+
+  # parse statement
+  parse_stmt(tokens)
+}
+
+parse_vardeclaration <- function(tokens) {
+  name <- tokens[[1]]
+  tokens <- consume(tokens, token_type$IDENTIFIER)
+
+  initializer <- NULL
+  if (tokens[[1]]$type == token_type$EQUAL) {
+    p <- parse_expression(tokens[-1])
+    initializer <- p$expr
+    tokens <- p$tokens
+  }
+
+  tokens <- consume(tokens, token_type$SEMICOLON)
+  list(stmt = stmt_variable(name, initializer), tokens = tokens)
+}
+
+parse_stmt <- function(tokens) {
   token <- tokens[[1]]
   if (token$type == token_type$PRINT) {
     return(parse_stmt_print(tokens[-1]))
   }
 
-  # parse as primary expression
   parse_stmt_expression(tokens)
 }
 
@@ -161,6 +184,11 @@ parse_primary <- function(tokens) {
 
   if (type %in% c(token_type$NUMBER, token_type$STRING)) {
     expr <- expr_literal(tokens[[1]]$literal)
+    return(list(expr = expr, tokens = tokens[-1]))
+  }
+
+  if (type == token_type$IDENTIFIER) {
+    expr <- expr_variable(tokens[[1]])
     return(list(expr = expr, tokens = tokens[-1]))
   }
 

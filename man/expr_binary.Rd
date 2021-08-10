@@ -5,6 +5,7 @@
 \alias{expr_grouping}
 \alias{expr_literal}
 \alias{expr_unary}
+\alias{expr_variable}
 \title{Expressions}
 \usage{
 expr_binary(left, operator, right)
@@ -14,6 +15,8 @@ expr_grouping(expression)
 expr_literal(value)
 
 expr_unary(operator, right)
+
+expr_variable(name)
 }
 \arguments{
 \item{left, right}{tokens}

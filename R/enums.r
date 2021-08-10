@@ -46,5 +46,7 @@ token_symbol <- list(
   "GREATER" = ">",
   "GREATER_EQUAL" = ">=",
   "LESS" = "<",
-  "LESS_EQUAL" = "<="
+  "LESS_EQUAL" = "<=",
+  # literals
+  "IDENTIFIER" = "variable name"
 )

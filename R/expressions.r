@@ -1,31 +1,45 @@
+expr <- function(x, subclass) {
+  structure(x, class = c(subclass, "lox_expr", class(x)))
+}
+
 #' Expressions
 #'
 #' @param left,right tokens
 #' @param operator operator token
 expr_binary <- function(left, operator, right) {
   x <- list(left = left, operator = operator, right = right)
-  structure(x, class = c("lox_expr_binary", "lox_expr", class(x)))
+  expr(x, "lox_expr_binary")
 }
 
 #' @rdname expr_binary
 expr_grouping <- function(expression) {
   x <- list(expression = expression)
-  structure(x, class = c("lox_expr_grouping", "lox_expr", class(x)))
+  expr(x, "lox_expr_grouping")
 }
 
 #' @rdname expr_binary
 expr_literal <- function(value) {
   x <- list(value = value)
-  structure(x, class = c("lox_expr_literal", "lox_expr", class(x)))
+  expr(x, "lox_expr_literal")
 }
 
 #' @rdname expr_binary
 expr_unary <- function(operator, right) {
   x <- list(operator = operator, right = right)
-  structure(x, class = c("lox_expr_unary", "lox_expr", class(x)))
+  expr(x, "lox_expr_unary")
 }
 
-#parse_expression(scan_tokens("(-1 == 10) * ((9 - 3) + 7)"))
+#' @rdname expr_binary
+expr_variable <- function(name) {
+  x <- list(name = name)
+  expr(x, "lox_expr_variable")
+}
+
+#' @export
+print.lox_expr <- function(x, ...) {
+  cat(format(x, ...), "\n")
+}
+
 
 #' @export
 format.lox_expr_grouping <- function(x, pad = 0, ...) {
@@ -63,6 +77,7 @@ format.lox_expr_literal <- function(x, pad = 0, ...) {
 }
 
 #' @export
-print.lox_expr <- function(x, ...) {
-  cat(format(x, ...), "\n")
+format.lox_expr_variable <- function(x, pad = 0, ...) {
+  dash <- paste(rep("-", pad), collapse = "")
+  sprintf("|-%s %s", dash, x$name$lexeme)
 }
