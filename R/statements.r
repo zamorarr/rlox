@@ -41,7 +41,7 @@ format.lox_stmt_print <- function(x, pad = 0, ...) {
 #' @export
 format.lox_stmt_variable <- function(x, pad = 0, ...) {
   dash <- paste(rep("-", pad), collapse = "")
-  s <- sprintf("|-%s`var %s`", dash, x$name$lexeme)
+  s <- sprintf("|-%s`var` %s", dash, x$name$lexeme)
 
   # show initialization if there is one
   if (!is.null(x$initializer)) {

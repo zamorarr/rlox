@@ -29,11 +29,21 @@ expr_unary <- function(operator, right) {
   expr(x, "lox_expr_unary")
 }
 
+#' @param name token
 #' @rdname expr_binary
 expr_variable <- function(name) {
   x <- list(name = name)
   expr(x, "lox_expr_variable")
 }
+
+#' @param name token
+#' @param value expression
+#' @rdname expr_binary
+expr_assignment <- function(name, value) {
+  x <- list(name = name, value = value)
+  expr(x, "lox_expr_assignment")
+}
+
 
 #' @export
 print.lox_expr <- function(x, ...) {
@@ -80,4 +90,12 @@ format.lox_expr_literal <- function(x, pad = 0, ...) {
 format.lox_expr_variable <- function(x, pad = 0, ...) {
   dash <- paste(rep("-", pad), collapse = "")
   sprintf("|-%s %s", dash, x$name$lexeme)
+}
+
+#' @export
+format.lox_expr_assignment <- function(x, pad = 0, ...) {
+  dash <- paste(rep("-", pad), collapse = "")
+  sprintf("|-%s`assign` %s\n|--%s%s",
+          dash, x$name$lexeme,
+          dash, format(x$value, pad = pad + 1))
 }

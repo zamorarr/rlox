@@ -4,6 +4,10 @@ token <- function(type, lexeme, literal, line) {
   structure(x, class = c("token", class(x)))
 }
 
+is_type <- function(token, type) {
+  identical(token$type, type)
+}
+
 #' @export
 format.token <- function(x, ...) {
   sprintf("<token> %s %s %s", x$type, x$lexeme, x$literal)

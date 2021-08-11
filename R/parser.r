@@ -67,8 +67,32 @@ parse_stmt_expression <- function(tokens) {
 }
 
 parse_expression <- function(tokens) {
-  #cat("parse_expression\n")
-  parse_equality(tokens)
+  parse_assignment(tokens)
+}
+
+parse_assignment <- function(tokens) {
+  p <- parse_equality(tokens)
+  expr <- p$expr
+  tokens <- p$tokens
+
+  # look for assignment token
+  if (is_type(tokens[[1]], token_type$EQUAL)) {
+    equals <- tokens[[1]]
+    p <- parse_assignment(tokens[-1])
+    value <- p$expr
+    tokens <- p$tokens
+
+    if (inherits(expr, "lox_expr_variable")) {
+      name <- expr$name
+      expr <- expr_assignment(name, value)
+      return(list(expr = expr, tokens = tokens))
+    }
+
+    lox_runtime_error("Invalid assignment target.", equals)
+  }
+
+  # return
+  list(expr = expr, tokens = tokens)
 }
 
 parse_equality <- function(tokens) {

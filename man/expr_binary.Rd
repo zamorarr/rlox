@@ -6,6 +6,7 @@
 \alias{expr_literal}
 \alias{expr_unary}
 \alias{expr_variable}
+\alias{expr_assignment}
 \title{Expressions}
 \usage{
 expr_binary(left, operator, right)
@@ -17,11 +18,17 @@ expr_literal(value)
 expr_unary(operator, right)
 
 expr_variable(name)
+
+expr_assignment(name, value)
 }
 \arguments{
 \item{left, right}{tokens}
 
 \item{operator}{operator token}
+
+\item{value}{expression}
+
+\item{name}{token}
 }
 \description{
 Expressions

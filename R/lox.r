@@ -1,6 +1,6 @@
 #' @export
 lox <- function(args = NULL) {
-  x <- list(had_error = FALSE)
+  x <- list(had_error = FALSE, env = env_new())
   obj <- structure(x, class = c("lox", class(x)))
 
   if (length(args) > 1) {
@@ -68,7 +68,8 @@ run.lox <- function(obj, line) {
   # scan tokens
   tokens <- scan_tokens(line)
   statements <- parse_lox(tokens)
-  interpret(statements)
+  #obj$env <- interpret(statements, obj$env)
+  interpret(statements, obj$env)
 
   # return object
   obj

@@ -1,37 +1,80 @@
-interpret <- function(statements) {
+interpret <- function(statements, env = NULL) {
+  # create environment if it doesn't exist
+  #env <- rlang::new_environment()
+  if (is.null(env)) env <- env_new()
+
+  # evaluate statements in environment
   for (statement in statements) {
-    evaluate(statement)
+    evaluate(statement, env)
   }
+
+  # debug show env
+  #rlang::env_print(env)
+
+  # return env? not necessary because env is modified in place
+  #env
+  invisible(env)
 }
 
 #' @export
-evaluate <- function(x) UseMethod("evaluate")
+evaluate <- function(x, env) UseMethod("evaluate")
 
 #' @export
-evaluate.lox_stmt_print <- function(x) {
-  value <- evaluate(x$expression)
+evaluate.lox_stmt_variable <- function(x, env) {
+  value <- NULL
+
+  # evaluate intializer
+  if (!is.null(x$initializer)) {
+    value <- evaluate(x$initializer, env)
+  }
+
+  # assign to environment
+  env_define(env, x$name$lexeme, value)
+  return()
+}
+
+#' @export
+evaluate.lox_expr_assignment <- function(x, env) {
+  # evaluate expression
+  val <- evaluate(x$value)
+
+  # assign value to name
+  env_assign(env, x$name, val)
+
+  # return value
+  val
+}
+
+#' @export
+evaluate.lox_expr_variable <- function(x, env) {
+  env_get(env, x$name)
+}
+
+#' @export
+evaluate.lox_stmt_print <- function(x, env = NULL) {
+  value <- evaluate(x$expression, env)
   if (is.logical(value)) value <- tolower(as.character(value))
   cat(as.character(value), "\n")
 }
 
 #' @export
-evaluate.lox_stmt_expression <- function(x) {
-  evaluate(x$expression)
+evaluate.lox_stmt_expression <- function(x, env = NULL) {
+  evaluate(x$expression, env)
 }
 
 #' @export
-evaluate.lox_expr_literal <- function(x) {
+evaluate.lox_expr_literal <- function(x, env = NULL) {
   x$value
 }
 
 #' @export
-evaluate.lox_expr_grouping <- function(x) {
-  evaluate(x$expression)
+evaluate.lox_expr_grouping <- function(x, env = NULL) {
+  evaluate(x$expression, env)
 }
 
 #' @export
-evaluate.lox_expr_unary <- function(x) {
-  right <- evaluate(x$right)
+evaluate.lox_expr_unary <- function(x, env = NULL) {
+  right <- evaluate(x$right, env)
 
   type <- x$operator$type
   if (type == token_type$BANG) {
@@ -48,9 +91,9 @@ evaluate.lox_expr_unary <- function(x) {
 }
 
 #' @export
-evaluate.lox_expr_binary <- function(x) {
-  left <- evaluate(x$left)
-  right <- evaluate(x$right)
+evaluate.lox_expr_binary <- function(x, env = NULL) {
+  left <- evaluate(x$left, env)
+  right <- evaluate(x$right, env)
 
   type <- x$operator$type
 
