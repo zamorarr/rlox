@@ -20,9 +20,19 @@ run_file.lox <- function(obj, path) {
   #obj <- run.lox(obj, bytes)
   #src <- paste(readLines(path), collapse = "\n")
   src <- readChar(path, file.info(path)$size)
-  obj <- run.lox(obj, src)
-  if (obj$had_error) stop() # exit 65
-  # if(obj$had_runtime_error) quit(save = "no", status = 70)
+  obj <- tryCatch(
+    error = function(cnd) {
+      message(conditionMessage(cnd))
+      obj$had_error <- TRUE
+      obj
+    },
+    run.lox(obj, src)
+  )
+
+  if (!interactive() && obj$had_error) {
+    quit(save = "no", status = 65) # exit 65
+    # if(obj$had_runtime_error) quit(save = "no", status = 70)
+  }
 }
 
 run_prompt <- function(obj) UseMethod("run_prompt")

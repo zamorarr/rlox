@@ -1,3 +1,9 @@
+test_that("interpreter throws error for undefined variable", {
+  tokens <- scan_tokens("d;")
+  p <- parse_tokens(tokens)
+  expect_error(interpret(p))
+})
+
 test_that("interpreter works for if statement", {
   x <- 'var a = 3; var b = 4;if (a > b) print "a bigger"; else print "a not bigger";'
   tokens <- scan_tokens(x)
