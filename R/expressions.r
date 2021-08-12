@@ -24,6 +24,14 @@ expr_literal <- function(value) {
 }
 
 #' @rdname expr_binary
+#' @param left,right expression
+#' @param operator token
+expr_logical <- function(left, operator, right) {
+  x <- list(left = left, operator = operator, right = right)
+  expr(x, "lox_expr_logical")
+}
+
+#' @rdname expr_binary
 expr_unary <- function(operator, right) {
   x <- list(operator = operator, right = right)
   expr(x, "lox_expr_unary")
@@ -84,6 +92,15 @@ format.lox_expr_unary <- function(x, pad = 0, ...) {
 format.lox_expr_literal <- function(x, pad = 0, ...) {
   dash <- paste(rep("-", pad), collapse = "")
   sprintf("|-%s \"%s\"", dash, x$value)
+}
+
+#' @export
+format.lox_expr_logical <- function(x, pad = 0, ...) {
+  dash <- paste(rep("-", pad), collapse = "")
+  sprintf("|-%s\n|-%s\n|-%s",
+          sprintf("%s`%s`", dash, x$operator$lexeme),
+          format(x$left, pad = pad + 1),
+          format(x$right, pad = pad + 1))
 }
 
 #' @export

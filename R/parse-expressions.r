@@ -3,7 +3,7 @@ parse_expression <- function(tokens) {
 }
 
 parse_assignment <- function(tokens) {
-  p <- parse_equality(tokens)
+  p <- parse_or(tokens)
   expr <- p$expr
   tokens <- p$tokens
 
@@ -24,6 +24,38 @@ parse_assignment <- function(tokens) {
   }
 
   # return
+  list(expr = expr, tokens = tokens)
+}
+
+parse_or <- function(tokens) {
+  p <- parse_and(tokens)
+  expr <- p$expr
+  tokens <- p$tokens
+
+  while(is_type(tokens[[1]], token_type$OR)) {
+    operator <- tokens[[1]]
+    p <- parse_and(tokens[-1])
+    right <- p$expr
+    tokens <- p$tokens
+    expr <- expr_logical(expr, operator, right)
+  }
+
+  list(expr = expr, tokens = tokens)
+}
+
+parse_and <- function(tokens) {
+  p <- parse_equality(tokens)
+  expr <- p$expr
+  tokens <- p$tokens
+
+  while(is_type(tokens[[1]], token_type$AND)) {
+    operator <- tokens[[1]]
+    p <- parse_equality(tokens[-1])
+    right <- p$expr
+    tokens <- p$tokens
+    expr <- expr_logical(expr, operator, right)
+  }
+
   list(expr = expr, tokens = tokens)
 }
 

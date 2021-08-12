@@ -1,15 +1,30 @@
 #' @export
-evaluate.lox_expr_literal <- function(x, env = NULL) {
+evaluate.lox_expr_literal <- function(x, env) {
   x$value
 }
 
 #' @export
-evaluate.lox_expr_grouping <- function(x, env = NULL) {
+evaluate.lox_expr_logical <- function(x, env) {
+  left <- evaluate(x$left, env)
+
+  if (is_type(x$operator, token_type$OR)) {
+    # short circuit OR
+    if (is_truthy(left)) return(left)
+  } else {
+    # short circuit AND
+    if (!is_truthy(left)) return(left)
+  }
+
+  evaluate(x$right, env)
+}
+
+#' @export
+evaluate.lox_expr_grouping <- function(x, env) {
   evaluate(x$expression, env)
 }
 
 #' @export
-evaluate.lox_expr_unary <- function(x, env = NULL) {
+evaluate.lox_expr_unary <- function(x, env) {
   right <- evaluate(x$right, env)
 
   type <- x$operator$type
@@ -27,7 +42,7 @@ evaluate.lox_expr_unary <- function(x, env = NULL) {
 }
 
 #' @export
-evaluate.lox_expr_binary <- function(x, env = NULL) {
+evaluate.lox_expr_binary <- function(x, env) {
   left <- evaluate(x$left, env)
   right <- evaluate(x$right, env)
 

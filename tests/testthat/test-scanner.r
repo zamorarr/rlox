@@ -17,16 +17,16 @@ test_that("scan_tokens stops when invalid token found", {
 test_that("scan token works", {
   actual <- scan_tokens('var a = "apple";\nvar b = "banana"')
   expected <- list(
-    token(token_type$VAR, token_symbol$VAR, "", line = 1L),
-    token(token_type$IDENTIFIER, "a", "", line = 1L),
-    token(token_type$EQUAL, token_symbol$EQUAL, "", line = 1L),
-    token(token_type$STRING, "\"apple\"", "apple", line = 1L),
-    token(token_type$SEMICOLON, token_symbol$SEMICOLON, "", line = 1L),
-    token(token_type$VAR, token_symbol$VAR, "", line = 2L),
-    token(token_type$IDENTIFIER, "b", "", line = 2L),
-    token(token_type$EQUAL, token_symbol$EQUAL, "", line = 2L),
+    token(token_type$VAR, token_symbol$VAR),
+    token(token_type$IDENTIFIER, "a"),
+    token(token_type$EQUAL, token_symbol$EQUAL),
+    token(token_type$STRING, "\"apple\"", "apple"),
+    token(token_type$SEMICOLON, token_symbol$SEMICOLON),
+    token(token_type$VAR, token_symbol$VAR, line = 2L),
+    token(token_type$IDENTIFIER, "b", line = 2L),
+    token(token_type$EQUAL, token_symbol$EQUAL, line = 2L),
     token(token_type$STRING, "\"banana\"", "banana", line = 2L),
-    token(token_type$EOF, token_symbol$EOF, "", line = 2L)
+    token(token_type$EOF, token_symbol$EOF, line = 2L)
   )
 
   expect_identical(actual, expected)
@@ -42,6 +42,30 @@ test_that("scan_tokens works on if statement", {
     token(token_type$IDENTIFIER, "x"),
     token(token_type$ELSE, "else"),
     token(token_type$IDENTIFIER, "y"),
+    token(token_type$EOF, token_symbol$EOF)
+  )
+
+  expect_identical(actual, expected)
+})
+
+test_that("scan_tokens works on `or` expression", {
+  actual <- scan_tokens("a or b")
+  expected <- list(
+    token(token_type$IDENTIFIER, "a"),
+    token(token_type$OR, token_symbol$OR),
+    token(token_type$IDENTIFIER, "b"),
+    token(token_type$EOF, token_symbol$EOF)
+  )
+
+  expect_identical(actual, expected)
+})
+
+test_that("scan_tokens works on `and` expression", {
+  actual <- scan_tokens("a and b")
+  expected <- list(
+    token(token_type$IDENTIFIER, "a"),
+    token(token_type$AND, token_symbol$AND),
+    token(token_type$IDENTIFIER, "b"),
     token(token_type$EOF, token_symbol$EOF)
   )
 

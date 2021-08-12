@@ -52,6 +52,8 @@ token_symbol <- list(
   "VAR" = "var",
   # keywords,
   "IF" = "if",
+  "OR" = "or",
+  "AND" = "and",
   # other
   "EOF" = ""
 )

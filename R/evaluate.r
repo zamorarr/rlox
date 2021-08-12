@@ -20,7 +20,7 @@ interpret <- function(statements, env = NULL) {
 evaluate <- function(x, env) UseMethod("evaluate")
 
 is_truthy <- function(x) {
-  if (x == "nil") FALSE
+  if (x == "nil") return(FALSE)
   if (is.logical(x)) return(x)
   TRUE
 }

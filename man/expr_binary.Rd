@@ -4,6 +4,7 @@
 \alias{expr_binary}
 \alias{expr_grouping}
 \alias{expr_literal}
+\alias{expr_logical}
 \alias{expr_unary}
 \alias{expr_variable}
 \alias{expr_assignment}
@@ -15,6 +16,8 @@ expr_grouping(expression)
 
 expr_literal(value)
 
+expr_logical(left, operator, right)
+
 expr_unary(operator, right)
 
 expr_variable(name)
@@ -22,9 +25,9 @@ expr_variable(name)
 expr_assignment(name, value)
 }
 \arguments{
-\item{left, right}{tokens}
+\item{left, right}{expression}
 
-\item{operator}{operator token}
+\item{operator}{token}
 
 \item{value}{expression}
 

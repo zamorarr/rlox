@@ -19,3 +19,28 @@ test_that("parse_tokens works for if statement", {
 
   expect_identical(actual, expected)
 })
+
+test_that("parse_tokens works for or expression", {
+  tokens <- scan_tokens("a or b;")
+  actual <- parse_tokens(tokens)
+  expected <- list(stmt_expression(expr_logical(
+    left = expr_variable(token(token_type$IDENTIFIER, "a")),
+    operator = token(token_type$OR, token_symbol$OR),
+    right = expr_variable(token(token_type$IDENTIFIER, "b"))
+  )))
+
+  expect_identical(actual, expected)
+})
+
+test_that("parse_tokens works for and expression", {
+  tokens <- scan_tokens("a and b;")
+  actual <- parse_tokens(tokens)
+  expected <- list(stmt_expression(expr_logical(
+    left = expr_variable(token(token_type$IDENTIFIER, "a")),
+    operator = token(token_type$AND, token_symbol$AND),
+    right = expr_variable(token(token_type$IDENTIFIER, "b"))
+  )))
+
+  expect_identical(actual, expected)
+})
+
