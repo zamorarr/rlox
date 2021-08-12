@@ -1,4 +1,4 @@
-parse_lox <- function(tokens) {
+parse_tokens <- function(tokens) {
   # initialize output
   statements <- list()
 

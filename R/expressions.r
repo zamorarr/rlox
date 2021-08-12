@@ -83,7 +83,7 @@ format.lox_expr_unary <- function(x, pad = 0, ...) {
 #' @export
 format.lox_expr_literal <- function(x, pad = 0, ...) {
   dash <- paste(rep("-", pad), collapse = "")
-  sprintf("|-%s %s", dash, x$value)
+  sprintf("|-%s \"%s\"", dash, x$value)
 }
 
 #' @export

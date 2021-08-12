@@ -67,7 +67,7 @@ run <- function(obj, line) UseMethod("run")
 run.lox <- function(obj, line) {
   # scan tokens
   tokens <- scan_tokens(line)
-  statements <- parse_lox(tokens)
+  statements <- parse_tokens(tokens)
   #obj$env <- interpret(statements, obj$env)
   interpret(statements, obj$env)
 
