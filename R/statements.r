@@ -30,6 +30,15 @@ stmt_variable <- function(name, initializer = NULL) {
   stmt(x, "lox_stmt_variable")
 }
 
+
+#' @export
+#' @param condition expression
+#' @param body statement
+stmt_while <- function(condition, body) {
+  x <- list(condition = condition, body = body)
+  stmt(x, "lox_stmt_while")
+}
+
 #' If Statement
 #' @param condition expression
 #' @param then_branch statement
@@ -78,6 +87,16 @@ format.lox_stmt_block <- function(x, pad = 0, ...) {
     s <- paste0(s, sprintf("\n|--%s%s", dash, format(stmt)))
   }
   s
+}
+
+#' @export
+format.lox_stmt_while <- function(x, pad = 0, ...) {
+  dash <- paste(rep("-", pad), collapse = "")
+  s <- sprintf("|-%s\n|-%s\n|-%s",
+               sprintf("%s`%s`", dash, token_symbol$WHILE),
+               format(x$condition),
+               format(x$body)
+               )
 }
 
 #' @export

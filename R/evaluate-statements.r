@@ -2,7 +2,7 @@
 evaluate.lox_stmt_print <- function(x, env) {
   value <- evaluate(x$expression, env)
   if (is.logical(value)) value <- tolower(as.character(value))
-  cat(as.character(value), "\n")
+  cat(as.character(value), "\n", sep = "")
 }
 
 #' @export
@@ -45,4 +45,11 @@ evaluate.lox_stmt_if <- function(x, env) {
   }
 
   invisible(env)
+}
+
+#' @export
+evaluate.lox_stmt_while <- function(x, env) {
+  while(is_truthy(evaluate(x$condition, env))) {
+    evaluate(x$body, env)
+  }
 }

@@ -31,3 +31,9 @@ test_that("interpreter works for AND expression", {
   p <- parse_tokens(tokens)
   expect_output(interpret(p), "true")
 })
+
+test_that("interpret works for WHILE statement", {
+  tokens <- scan_tokens('var i = 1; while (i <= 3) {print i; i = i + 1;}')
+  p <- parse_tokens(tokens)
+  expect_output(interpret(p), "1\\n2\\n3")
+})

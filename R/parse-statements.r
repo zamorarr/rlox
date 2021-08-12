@@ -37,6 +37,11 @@ parse_statement <- function(tokens) {
     return(parse_statement_print(tokens[-1]))
   }
 
+  # while statement
+  if (is_type(token, token_type$WHILE)) {
+    return(parse_statement_while(tokens[-1]))
+  }
+
   # block statement
   if (is_type(token, token_type$LEFT_BRACE)) {
     # statement block returns a raw list of statements.
@@ -47,6 +52,26 @@ parse_statement <- function(tokens) {
 
   # expression statement
   parse_statement_expression(tokens)
+}
+
+parse_statement_while <- function(tokens) {
+  # check for opening (
+  tokens <- consume(tokens, token_type$LEFT_PAREN)
+
+  # parse condition
+  p <- parse_expression(tokens)
+  condition <- p$expr
+  tokens <- p$tokens
+
+  # check for closing )
+  tokens <- consume(tokens, token_type$RIGHT_PAREN)
+
+  # parse body
+  p <- parse_statement(tokens)
+  body <- p$stmt
+  tokens <- p$tokens
+
+  list(stmt = stmt_while(condition, body), tokens = tokens)
 }
 
 parse_statement_if <- function(tokens) {

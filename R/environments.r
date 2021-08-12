@@ -5,7 +5,7 @@ env_new <- function(parent = emptyenv()) {
 }
 
 #' @param env lox environment
-#' @param token
+#' @param token token
 env_get <- function(env, token) {
   # check that token is type variable
   if (!token$type %in% c(token_type$VAR, token_type$IDENTIFIER)) {
@@ -47,7 +47,7 @@ env_has <- function(env, name) {
 
 env_assign <- function(env, token, value) {
   name <- token$lexeme
-  if (env_contains(env, name)) {
+  if (env_has(env, name)) {
     # assignment happens in the environment where the name is found
     # this can be a parent environment
     assign(name, value, envir = env, inherits = TRUE)

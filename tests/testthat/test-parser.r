@@ -44,3 +44,14 @@ test_that("parse_tokens works for and expression", {
   expect_identical(actual, expected)
 })
 
+test_that("parse_tokens works for while statement", {
+  tokens <- scan_tokens("while (x) y;")
+  actual <- parse_tokens(tokens)
+  expected <- list(stmt_while(
+    condition = expr_variable(token(token_type$IDENTIFIER, "x")),
+    body = stmt_expression(expr_variable(token(token_type$IDENTIFIER, "y")))
+  ))
+
+  expect_identical(actual, expected)
+})
+

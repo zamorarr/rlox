@@ -101,7 +101,7 @@ evaluate.lox_expr_variable <- function(x, env) {
 #' @export
 evaluate.lox_expr_assignment <- function(x, env) {
   # evaluate expression
-  val <- evaluate(x$value)
+  val <- evaluate(x$value, env)
 
   # assign value to name
   env_assign(env, x$name, val)

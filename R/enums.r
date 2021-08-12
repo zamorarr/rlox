@@ -54,6 +54,7 @@ token_symbol <- list(
   "IF" = "if",
   "OR" = "or",
   "AND" = "and",
+  "WHILE" = "while",
   # other
   "EOF" = ""
 )

@@ -71,3 +71,18 @@ test_that("scan_tokens works on `and` expression", {
 
   expect_identical(actual, expected)
 })
+
+test_that("scan_tokens works on while statement", {
+  actual <- scan_tokens("while (x) y;")
+  expected <- list(
+    token(token_type$WHILE, token_symbol$WHILE),
+    token(token_type$LEFT_PAREN, token_symbol$LEFT_PAREN),
+    token(token_type$IDENTIFIER, "x"),
+    token(token_type$RIGHT_PAREN, token_symbol$RIGHT_PAREN),
+    token(token_type$IDENTIFIER, "y"),
+    token(token_type$SEMICOLON, token_symbol$SEMICOLON),
+    token(token_type$EOF, token_symbol$EOF)
+  )
+
+  expect_identical(actual, expected)
+})
