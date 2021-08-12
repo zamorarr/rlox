@@ -9,7 +9,6 @@ stmt_block <- function(statements) {
   stmt(x, "lox_stmt_block")
 }
 
-
 #' @param expression expression
 stmt_expression <- function(expression) {
   x <- list(expression = expression)
@@ -23,13 +22,21 @@ stmt_print <- function(expression) {
   stmt(x, "lox_stmt_print")
 }
 
-
 #' Variable Statement
 #' @param name token
 #' @param initializer expression
 stmt_variable <- function(name, initializer = NULL) {
   x <- list(name = name, initializer = initializer)
   stmt(x, "lox_stmt_variable")
+}
+
+#' If Statement
+#' @param condition expression
+#' @param then_branch statement
+#' @param else_branch statement
+stmt_if <- function(condition, then_branch, else_branch = NULL) {
+  x <- list(condition = condition, then_branch = then_branch, else_branch = else_branch)
+  stmt(x, "lox_stmt_if")
 }
 
 #' @export
@@ -70,5 +77,22 @@ format.lox_stmt_block <- function(x, pad = 0, ...) {
   for (stmt in x$statements) {
     s <- paste0(s, sprintf("\n|--%s%s", dash, format(stmt)))
   }
+  s
+}
+
+#' @export
+format.lox_stmt_if <- function(x, pad = 0, ...) {
+  dash <- paste(rep("-", pad), collapse = "")
+  s <- sprintf("|-%s`if`\n|-%s%s\n|-%s%s",
+               dash,
+               dash, format(x$condition),
+               dash, format(x$then_branch)
+               )
+
+  if (!is.null(x$else_branch)) {
+    s2 <- sprintf("\n|-%s%s", dash, format(x$else_branch))
+    s <- paste0(s, s2)
+  }
+
   s
 }

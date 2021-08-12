@@ -31,3 +31,19 @@ test_that("scan token works", {
 
   expect_identical(actual, expected)
 })
+
+test_that("scan_tokens works on if statement", {
+  actual <- scan_tokens("if (condition) x else y")
+  expected <- list(
+    token(token_type$IF, token_symbol$IF),
+    token(token_type$LEFT_PAREN, token_symbol$LEFT_PAREN),
+    token(token_type$IDENTIFIER, "condition"),
+    token(token_type$RIGHT_PAREN, token_symbol$RIGHT_PAREN),
+    token(token_type$IDENTIFIER, "x"),
+    token(token_type$ELSE, "else"),
+    token(token_type$IDENTIFIER, "y"),
+    token(token_type$EOF, token_symbol$EOF)
+  )
+
+  expect_identical(actual, expected)
+})

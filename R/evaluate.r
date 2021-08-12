@@ -19,8 +19,6 @@ interpret <- function(statements, env = NULL) {
 #' @export
 evaluate <- function(x, env) UseMethod("evaluate")
 
-
-
 is_truthy <- function(x) {
   if (x == "nil") FALSE
   if (is.logical(x)) return(x)

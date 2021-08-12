@@ -1,4 +1,4 @@
-token <- function(type, lexeme, literal, line) {
+token <- function(type, lexeme, literal = "", line = 1L) {
   stopifnot(type %in% names(token_type))
   x <- list(type = type, lexeme =  lexeme, literal = literal, line = line)
   structure(x, class = c("token", class(x)))

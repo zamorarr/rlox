@@ -50,6 +50,8 @@ token_symbol <- list(
   # literals
   "IDENTIFIER" = "variable name",
   "VAR" = "var",
+  # keywords,
+  "IF" = "if",
   # other
   "EOF" = ""
 )
