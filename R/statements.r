@@ -1,15 +1,26 @@
 #' Statements
+stmt <- function(x, subclass) {
+  structure(x, class = c(subclass, "lox_stmt", class(x)))
+}
+
+#' @param statements list of statements
+stmt_block <- function(statements) {
+  x <- list(statements = statements)
+  stmt(x, "lox_stmt_block")
+}
+
+
 #' @param expression expression
 stmt_expression <- function(expression) {
   x <- list(expression = expression)
-  structure(x, class = c("lox_stmt_expression", "lox_stmt", class(x)))
+  stmt(x, "lox_stmt_expression")
 }
 
 #' Print Statement
 #' @param expression expression
 stmt_print <- function(expression) {
   x <- list(expression = expression)
-  structure(x, class = c("lox_stmt_print", "lox_stmt", class(x)))
+  stmt(x, "lox_stmt_print")
 }
 
 
@@ -18,7 +29,7 @@ stmt_print <- function(expression) {
 #' @param initializer expression
 stmt_variable <- function(name, initializer = NULL) {
   x <- list(name = name, initializer = initializer)
-  structure(x, class = c("lox_stmt_variable", "lox_stmt", class(x)))
+  stmt(x, "lox_stmt_variable")
 }
 
 #' @export
@@ -49,5 +60,15 @@ format.lox_stmt_variable <- function(x, pad = 0, ...) {
     s <- paste0(s, s2)
   }
 
+  s
+}
+
+#' @export
+format.lox_stmt_block <- function(x, pad = 0, ...) {
+  dash <- paste(rep("-", pad), collapse = "")
+  s <- sprintf("|-%s`{`", dash)
+  for (stmt in x$statements) {
+    s <- paste0(s, sprintf("\n|--%s%s", dash, format(stmt)))
+  }
   s
 }

@@ -16,14 +16,14 @@ env_get <- function(env, token) {
   # get name of token
   name <- token$lexeme
 
-  # check if name exists in environment
-  if (!exists(name, envir = env)) {
+  # check if name exists in environment (or any parent)
+  if (!exists(name, envir = env, inherits = TRUE)) {
     msg <- sprintf("Undefined variable '%s'", name)
     lox_runtime_error(msg, token)
   }
 
   # get and return value for name
-  get(name, envir = env)
+  get(name, envir = env, inherits = TRUE)
 }
 
 #' @param env lox environment
@@ -41,14 +41,16 @@ env_define <- function(env, name, value) {
 
 #' @param env lox environment
 #' @param name string
-env_contains <- function(env, name) {
-  exists(name, envir = env, inherits = FALSE)
+env_has <- function(env, name) {
+  exists(name, envir = env, inherits = TRUE)
 }
 
 env_assign <- function(env, token, value) {
   name <- token$lexeme
   if (env_contains(env, name)) {
-    assign(name, value, envir = env)
+    # assignment happens in the environment where the name is found
+    # this can be a parent environment
+    assign(name, value, envir = env, inherits = TRUE)
     return(env)
   }
 

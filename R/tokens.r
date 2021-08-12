@@ -10,7 +10,7 @@ is_type <- function(token, type) {
 
 #' @export
 format.token <- function(x, ...) {
-  sprintf("<token> %s %s %s", x$type, x$lexeme, x$literal)
+  sprintf("<token:%i> %s %s %s", x$line, x$type, x$lexeme, x$literal)
 }
 
 #' @export

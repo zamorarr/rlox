@@ -22,7 +22,7 @@ token_type <- create_enum(c(
   # keywords
   names(keywords),
 
-  "EOF", "WHITESPACE", "COMMENT"
+  "EOF", "WHITESPACE", "COMMENT", "NEWLINE"
 ))
 
 token_symbol <- list(
@@ -48,5 +48,8 @@ token_symbol <- list(
   "LESS" = "<",
   "LESS_EQUAL" = "<=",
   # literals
-  "IDENTIFIER" = "variable name"
+  "IDENTIFIER" = "variable name",
+  "VAR" = "var",
+  # other
+  "EOF" = ""
 )

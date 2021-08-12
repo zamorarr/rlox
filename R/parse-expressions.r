@@ -1,71 +1,3 @@
-parse_lox <- function(tokens) {
-  # initialize output
-  statements <- list()
-
-  i <- 1L
-  while(length(tokens) > 1) {
-    p <- parse_declaration(tokens)
-    statements[[i]] <- p$stmt
-    tokens <- p$tokens
-    i <- i + 1L
-  }
-
-  # return output
-  statements
-}
-
-parse_declaration <- function(tokens) {
-  token <- tokens[[1]]
-  if (token$type == token_type$VAR) {
-    return(parse_vardeclaration(tokens[-1]))
-  }
-
-  # parse statement
-  parse_stmt(tokens)
-}
-
-parse_vardeclaration <- function(tokens) {
-  name <- tokens[[1]]
-  tokens <- consume(tokens, token_type$IDENTIFIER)
-
-  initializer <- NULL
-  if (tokens[[1]]$type == token_type$EQUAL) {
-    p <- parse_expression(tokens[-1])
-    initializer <- p$expr
-    tokens <- p$tokens
-  }
-
-  tokens <- consume(tokens, token_type$SEMICOLON)
-  list(stmt = stmt_variable(name, initializer), tokens = tokens)
-}
-
-parse_stmt <- function(tokens) {
-  token <- tokens[[1]]
-  if (token$type == token_type$PRINT) {
-    return(parse_stmt_print(tokens[-1]))
-  }
-
-  parse_stmt_expression(tokens)
-}
-
-parse_stmt_print <- function(tokens) {
-  p <- parse_expression(tokens)
-  expr <- p$expr
-  tokens <- p$tokens
-
-  tokens <- consume(tokens, token_type$SEMICOLON)
-  list(stmt = stmt_print(expr), tokens = tokens)
-}
-
-parse_stmt_expression <- function(tokens) {
-  p <- parse_expression(tokens)
-  expr <- p$expr
-  tokens <- p$tokens
-
-  tokens <- consume(tokens, token_type$SEMICOLON)
-  list(stmt = stmt_expression(expr), tokens = tokens)
-}
-
 parse_expression <- function(tokens) {
   parse_assignment(tokens)
 }
@@ -232,16 +164,4 @@ parse_primary <- function(tokens) {
   # otherwise no idea
   token <- tokens[[1]]
   lox_parser_error(sprintf("cannot parse token `%s`", token$lexeme), token$line)
-}
-
-#' Consume first token if it matches type
-consume <- function(tokens, type) {
-  token <- tokens[[1]]
-  if (token$type != type) {
-    msg <- sprintf("Expected '%s'", token_symbol[[type]])
-    lox_parser_error(msg, token$line)
-  }
-
-  # return tokens
-  tokens[-1]
 }
