@@ -1,0 +1,11 @@
+// define a
+var a = 3;
+
+// define b
+var b = 4;
+
+// check if a is bigger
+if (a > b)
+  print "a is bigger";
+else
+  print "a is not bigger";
