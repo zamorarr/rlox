@@ -1,3 +1,5 @@
+#' Create new Lox environment
+#' @param parent parent environment
 env_new <- function(parent = emptyenv()) {
   e <- new.env(parent = parent)
   class(e) <- c("lox_env", class(e))
@@ -6,6 +8,7 @@ env_new <- function(parent = emptyenv()) {
 
 #' @param env lox environment
 #' @param token token
+#' @rdname env_new
 env_get <- function(env, token) {
   # check that token is type variable
   if (!token$type %in% c(token_type$VAR, token_type$IDENTIFIER)) {
@@ -29,6 +32,7 @@ env_get <- function(env, token) {
 #' @param env lox environment
 #' @param name string
 #' @param value any value
+#' @rdname env_new
 env_define <- function(env, name, value) {
   # check that token is type variable
   #if (!inherits(expr, "lox_expr_variable")) {
@@ -39,12 +43,18 @@ env_define <- function(env, name, value) {
   assign(name, value, envir = env)
 }
 
+
 #' @param env lox environment
 #' @param name string
+#' @rdname env_new
 env_has <- function(env, name) {
   exists(name, envir = env, inherits = TRUE)
 }
 
+#' @param env lox environment
+#' @param token token
+#' @param value value to assign to token
+#' @rdname env_new
 env_assign <- function(env, token, value) {
   name <- token$lexeme
   if (env_has(env, name)) {

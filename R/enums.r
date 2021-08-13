@@ -49,13 +49,18 @@ token_symbol <- list(
   "LESS_EQUAL" = "<=",
   # literals
   "IDENTIFIER" = "variable name",
-  "VAR" = "var",
   # keywords,
-  "IF" = "if",
-  "OR" = "or",
   "AND" = "and",
-  "WHILE" = "while",
+  "ELSE" = "else",
+  "FALSE" = "false",
   "FOR" = "for",
+  "IF" = "if",
+  "NIL" = "nil",
+  "OR" = "or",
+  "PRINT" = "print",
+  "TRUE" = "true",
+  "VAR" = "var",
+  "WHILE" = "while",
   # other
   "EOF" = ""
 )

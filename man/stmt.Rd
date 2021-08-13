@@ -2,10 +2,51 @@
 % Please edit documentation in R/statements.r
 \name{stmt}
 \alias{stmt}
+\alias{stmt_block}
+\alias{stmt_expression}
+\alias{stmt_if}
+\alias{stmt_print}
+\alias{stmt_variable}
+\alias{stmt_while}
 \title{Statements}
 \usage{
 stmt(x, subclass)
+
+stmt_block(statements)
+
+stmt_expression(expression)
+
+stmt_if(condition, then_branch, else_branch = NULL)
+
+stmt_print(expression)
+
+stmt_variable(name, initializer = NULL)
+
+stmt_while(condition, body)
+}
+\arguments{
+\item{statements}{list of statements}
+
+\item{expression}{expression}
+
+\item{condition}{expression}
+
+\item{then_branch}{statement}
+
+\item{else_branch}{statement}
+
+\item{name}{token}
+
+\item{initializer}{expression}
+
+\item{body}{statement}
 }
 \description{
 Statements
+
+If Statement
+
+Print Statement
+
+Variable Statement
 }
