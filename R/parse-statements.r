@@ -27,6 +27,11 @@ parse_statement <- function(tokens) {
   # get first token
   token <- tokens[[1]]
 
+  # for statement
+  if (is_type(token, token_type$FOR)) {
+    return(parse_statement_for(tokens[-1]))
+  }
+
   # if statement
   if (is_type(token, token_type$IF)) {
     return(parse_statement_if(tokens[-1]))
@@ -52,6 +57,83 @@ parse_statement <- function(tokens) {
 
   # expression statement
   parse_statement_expression(tokens)
+}
+
+parse_statement_for <- function(tokens) {
+  # check for closing )
+  tokens <- consume(tokens, token_type$LEFT_PAREN)
+
+  # get next token
+  token <- tokens[[1]]
+
+  # determine initializer
+  initializer <- NULL
+  if (is_type(token, token_type$SEMICOLON)) {
+    # no initializer
+    initializer <- NULL
+    tokens <- tokens[-1]
+  } else if (is_type(token, token_type$VAR)) {
+    # var declaration (ex. var i = 0)
+    p <- parse_vardeclaration(tokens[-1])
+    initializer <- p$stmt
+    tokens <- p$tokens
+  } else {
+    # statement expression (ex. ;)
+    initializer <- parse_statement_expression(tokens[-1])
+    initializer <- p$stmt
+    tokens <- p$tokens
+  }
+
+  # determine loop condition
+  token <- tokens[[1]]
+  condition <- NULL
+  if (!is_type(token, token_type$SEMICOLON)) {
+    p <- parse_expression(tokens)
+    condition <- p$expr
+    tokens <- p$tokens
+  }
+
+  # check for semicolon
+  tokens <- consume(tokens, token_type$SEMICOLON)
+
+  # determine increment
+  increment <- NULL
+  if (!is_type(token, token_type$RIGHT_PAREN)) {
+    p <- parse_expression(tokens)
+    increment <- p$expr
+    tokens <- p$tokens
+  }
+
+  # check for closing )
+  tokens <- consume(tokens, token_type$RIGHT_PAREN)
+
+  # determine body
+  p <- parse_statement(tokens)
+  body <- p$stmt
+  tokens <- p$tokens
+
+  # we've parsed all parts of the for loop
+  # now just de-sugar it by converting to a while loop
+
+  # add the increment to bottom of the while loop
+  if (!is.null(increment)) {
+    body <- stmt_block(list(
+      body,
+      stmt_expression(increment)
+    ))
+  }
+
+  # add condition to while loop
+  if (is.null(condition)) condition <- expr_literal(TRUE)
+  body <- stmt_while(condition, body)
+
+  # add initializer to top of body
+  if (!is.null(initializer)) {
+    body <- stmt_block(list(initializer, body))
+  }
+
+  # return
+  list(stmt = body, tokens = tokens)
 }
 
 parse_statement_while <- function(tokens) {
