@@ -86,3 +86,18 @@ test_that("parse_tokens converts for loop to while loop", {
 
   expect_identical(actual, expected)
 })
+
+test_that("parse_tokens works on function call", {
+  tokens <- scan_tokens("f(x, y)")
+  actual <- parse_call(tokens)$expr
+  expected <- expr_call(
+    callee = expr_variable(token(token_type$IDENTIFIER, "f")),
+    paren = token(token_type$RIGHT_PAREN, token_symbol$RIGHT_PAREN),
+    arguments = list(
+      expr_variable(token(token_type$IDENTIFIER, "x")),
+      expr_variable(token(token_type$IDENTIFIER, "y"))
+    )
+  )
+
+  expect_identical(actual, expected)
+})

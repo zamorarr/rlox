@@ -86,3 +86,19 @@ test_that("scan_tokens works on while statement", {
 
   expect_identical(actual, expected)
 })
+
+# scan_tokens works on function call
+test_that("scan_tokens works on a function call", {
+  actual <- scan_tokens("f(x,y)")
+  expected <- list(
+    token(token_type$IDENTIFIER, "f"),
+    token(token_type$LEFT_PAREN, token_symbol$LEFT_PAREN),
+    token(token_type$IDENTIFIER, "x"),
+    token(token_type$COMMA, token_symbol$COMMA),
+    token(token_type$IDENTIFIER, "y"),
+    token(token_type$RIGHT_PAREN, token_symbol$RIGHT_PAREN),
+    token(token_type$EOF, token_symbol$EOF)
+  )
+
+  expect_identical(actual, expected)
+})

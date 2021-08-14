@@ -109,3 +109,11 @@ evaluate.lox_expr_assignment <- function(x, env) {
   # return value
   val
 }
+
+#' @export
+evaluate.lox_expr_call <- function(x, env) {
+  callee <- evaluate(x$callee, env)
+  arguments <- lapply(x$arguments, evaluate, env = env)
+  #f <- lox_function(callee)
+  #lox_call(f, arguments)
+}

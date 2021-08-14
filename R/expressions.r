@@ -19,6 +19,14 @@ expr_binary <- function(left, operator, right) {
   expr(x, "lox_expr_binary")
 }
 
+#' @param callee expression
+#' @param paren token
+#' @rdname arguments list of expressions
+expr_call <- function(callee, paren, arguments) {
+  x <- list(callee = callee, paren = paren, arguments = arguments)
+  expr(x, "lox_expr_call")
+}
+
 #' @rdname expr
 expr_grouping <- function(expression) {
   x <- list(expression = expression)
@@ -73,6 +81,19 @@ format.lox_expr_binary <- function(x, pad = 0, ...) {
           dash, x$operator$lexeme,
           format(x$left, pad = pad),
           format(x$right, pad = pad))
+}
+
+#' @export
+format.lox_expr_call <- function(x, pad = 0, ...) {
+  dash <- paste(rep("-", pad), collapse = "")
+  s <- sprintf("%s||-%s", dash, format(x$callee, pad = pad))
+
+  for (arg in x$arguments) {
+    s2 <- sprintf("%s|--%s", dash, format(arg, pad = pad))
+    s <- paste(s, s2, sep = "\n")
+  }
+
+  s
 }
 
 

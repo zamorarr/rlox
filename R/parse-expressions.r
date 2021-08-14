@@ -146,7 +146,59 @@ parse_unary <- function(tokens) {
   }
 
   # parse as primary expression
-  parse_primary(tokens)
+  #parse_primary(tokens)
+  parse_call(tokens)
+}
+
+parse_call <- function(tokens) {
+  p <- parse_primary(tokens)
+  expr <- p$expr
+  tokens <- p$tokens
+
+  while (TRUE) {
+    if (is_type(tokens[[1]], token_type$LEFT_PAREN)) {
+      p <- parse_call_args(expr, tokens[-1])
+      expr <- p$expr
+      tokens <- p$tokens
+    } else {
+      break
+    }
+  }
+
+  list(expr = expr, tokens = tokens)
+}
+
+parse_call_args <- function(callee, tokens) {
+  # initialize arguments list
+  arguments <- list()
+  if (!is_type(tokens[[1]], token_type$RIGHT_PAREN)) {
+    while(TRUE) {
+      # check argument size
+      if (length(arguments) >= 255) {
+        lox_parser_error("Call cannot have more than 255 arguments", tokens[[1]]$line)
+      }
+
+      # parse argument
+      p <- parse_expression(tokens)
+      expr <- p$expr
+      tokens <- p$tokens
+
+      # add to arguments list
+      arguments <- c(arguments, list(expr))
+
+      # check if done
+      if (!is_type(tokens[[1]], token_type$COMMA)) break
+      tokens <- tokens[-1]
+    }
+  }
+
+  # extract closing paren
+  paren <- tokens[[1]]
+  tokens <- consume(tokens, token_type$RIGHT_PAREN)
+
+  # build call expression and return
+  expr <- expr_call(callee, paren, arguments)
+  list(expr = expr, tokens = tokens)
 }
 
 parse_primary <- function(tokens) {
