@@ -3,6 +3,16 @@ interpret <- function(statements, env = NULL) {
   #env <- rlang::new_environment()
   if (is.null(env)) env <- env_new()
 
+  # define built-in global functions
+  # this should go somewhere else probably
+  if (!env_has(env, "clock")) {
+    env_define(
+      env,
+      "clock",
+      callable(0, function() as.double(Sys.time()), function(x) "<native fn>")
+    )
+  }
+
   # evaluate statements in environment
   for (statement in statements) {
     evaluate(statement, env)

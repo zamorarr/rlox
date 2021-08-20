@@ -1,8 +1,8 @@
 #' @export
 evaluate.lox_stmt_print <- function(x, env) {
   value <- evaluate(x$expression, env)
-  if (is.logical(value)) value <- tolower(as.character(value))
-  cat(as.character(value), "\n", sep = "")
+  if (is.logical(value)) value <- tolower(format(value))
+  cat(format(value), "\n", sep = "")
 }
 
 #' @export

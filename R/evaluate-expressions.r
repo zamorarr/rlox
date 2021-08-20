@@ -114,6 +114,19 @@ evaluate.lox_expr_assignment <- function(x, env) {
 evaluate.lox_expr_call <- function(x, env) {
   callee <- evaluate(x$callee, env)
   arguments <- lapply(x$arguments, evaluate, env = env)
-  #f <- lox_function(callee)
-  #lox_call(f, arguments)
+
+  if (!inherits(callee, "lox_callable")) {
+    lox_runtime_error("Can only call functions and classes", x$paren)
+  }
+
+  if (length(arguments) != arity(callee)) {
+    lox_runtime_error(
+      sprintf("Expected %i arguments but got %i.", arity(callee), length(arguments)),
+      x$paren
+      )
+  }
+
+
+  # call function
+  lox_call(callee, arguments, env)
 }
