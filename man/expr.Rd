@@ -4,6 +4,7 @@
 \alias{expr}
 \alias{expr_assignment}
 \alias{expr_binary}
+\alias{expr_call}
 \alias{expr_grouping}
 \alias{expr_literal}
 \alias{expr_logical}
@@ -16,6 +17,8 @@ expr(x, subclass)
 expr_assignment(name, value)
 
 expr_binary(left, operator, right)
+
+expr_call(callee, paren, arguments)
 
 expr_grouping(expression)
 
@@ -35,6 +38,12 @@ expr_variable(name)
 \item{left, right}{expression}
 
 \item{operator}{token}
+
+\item{callee}{expression}
+
+\item{paren}{token}
+
+\item{arguments}{list of expressions}
 }
 \description{
 Expressions

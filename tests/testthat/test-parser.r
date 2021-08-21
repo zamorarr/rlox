@@ -104,8 +104,40 @@ test_that("parse_tokens works on function call", {
 
 test_that("parse_tokens works on function declaration", {
   actual <- parse_tokens(scan_tokens("fun f(x,y) {x + y;}"))
-  expected <- list(
 
-  )
+  expected <- list(stmt_function(
+    name = token(token_type$IDENTIFIER, "f"),
+    params = list(
+      token(token_type$IDENTIFIER, "x"),
+      token(token_type$IDENTIFIER, "y")
+    ),
+    body = list(stmt_expression(expr_binary(
+      left = expr_variable(token(token_type$IDENTIFIER, "x")),
+      operator = token(token_type$PLUS, token_symbol$PLUS),
+      right = expr_variable(token(token_type$IDENTIFIER, "y"))
+    )))
+  ))
+
+  expect_identical(actual, expected)
+})
+
+test_that("parse_tokens works on function declation with return statement", {
+  actual <- parse_tokens(scan_tokens("fun f(x,y) {return x + y;}"))
+
+  expected <- list(stmt_function(
+    name = token(token_type$IDENTIFIER, "f"),
+    params = list(
+      token(token_type$IDENTIFIER, "x"),
+      token(token_type$IDENTIFIER, "y")
+    ),
+    body = list(stmt_return(
+      keyword = token(token_type$RETURN, token_symbol$RETURN),
+      value = expr_binary(
+        left = expr_variable(token(token_type$IDENTIFIER, "x")),
+        operator = token(token_type$PLUS, token_symbol$PLUS),
+        right = expr_variable(token(token_type$IDENTIFIER, "y")))
+    ))
+  ))
+
   expect_identical(actual, expected)
 })

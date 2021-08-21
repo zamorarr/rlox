@@ -49,7 +49,7 @@ parse_fundeclaration <- function(tokens, kind) {
   # get body
   p <- parse_statement_block(tokens)
   body <- p$stmt
-  #body <- stmt_block(body)
+  #body <- stmt_block(body) # we don't want body wrapped in stmt_block? why not?
   tokens <- p$tokens
 
   # return
@@ -90,6 +90,11 @@ parse_statement <- function(tokens) {
     return(parse_statement_print(tokens[-1]))
   }
 
+  # return statement
+  if (is_type(token, token_type$RETURN)) {
+    return(parse_statement_return(tokens))
+  }
+
   # while statement
   if (is_type(token, token_type$WHILE)) {
     return(parse_statement_while(tokens[-1]))
@@ -105,6 +110,24 @@ parse_statement <- function(tokens) {
 
   # expression statement
   parse_statement_expression(tokens)
+}
+
+parse_statement_return <- function(tokens) {
+  # get return token
+  keyword <- tokens[[1]]
+  tokens <- tokens[-1]
+
+  # parse value
+  value <- NULL
+  if (!is_type(tokens[[1]], token_type$SEMICOLON)) {
+    p <- parse_expression(tokens)
+    value <- p$expr
+    tokens <- p$tokens
+  }
+
+  # check for semicolon
+  tokens <- consume(tokens, token_type$SEMICOLON)
+  list(stmt = stmt_return(keyword, value), tokens = tokens)
 }
 
 parse_statement_for <- function(tokens) {

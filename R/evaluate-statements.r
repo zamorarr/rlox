@@ -11,6 +11,18 @@ evaluate.lox_stmt_expression <- function(x, env) {
 }
 
 #' @export
+evaluate.lox_stmt_function <- function(x, env) {
+  # convert declaration to function
+  lf <- lox_function(x, env)
+
+  # add function to environment
+  env_define(env, x$name$lexeme, lf)
+
+  # return something
+  invisible(env)
+}
+
+#' @export
 evaluate.lox_stmt_variable <- function(x, env) {
   value <- NULL
 
@@ -45,6 +57,13 @@ evaluate.lox_stmt_if <- function(x, env) {
   }
 
   invisible(env)
+}
+
+#' @export
+evaluate.lox_stmt_return <- function(x, env) {
+  value <- NULL
+  if (!is.null(x$value)) value <- evaluate(x$value, env)
+  lox_return(value)
 }
 
 #' @export

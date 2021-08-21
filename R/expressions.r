@@ -21,7 +21,8 @@ expr_binary <- function(left, operator, right) {
 
 #' @param callee expression
 #' @param paren token
-#' @rdname arguments list of expressions
+#' @param arguments list of expressions
+#' @rdname expr
 expr_call <- function(callee, paren, arguments) {
   x <- list(callee = callee, paren = paren, arguments = arguments)
   expr(x, "lox_expr_call")

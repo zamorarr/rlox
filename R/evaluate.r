@@ -9,7 +9,7 @@ interpret <- function(statements, env = NULL) {
     env_define(
       env,
       "clock",
-      callable(0, function() as.double(Sys.time()), function(x) "<native fn>")
+      callable(0, function() as.double(Sys.time()), function() "<native fn>")
     )
   }
 

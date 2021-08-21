@@ -44,6 +44,15 @@ stmt_print <- function(expression) {
   stmt(x, "lox_stmt_print")
 }
 
+
+#' Return Statement
+#' @param keyword token
+#' @param value expression
+stmt_return <- function(keyword, value) {
+  x <- list(keyword = keyword, value = value)
+  stmt(x, "lox_stmt_return")
+}
+
 #' Variable Statement
 #' @param name token
 #' @param initializer expression

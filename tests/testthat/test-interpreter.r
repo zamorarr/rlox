@@ -37,3 +37,15 @@ test_that("interpret works for WHILE statement", {
   p <- parse_tokens(tokens)
   expect_output(interpret(p), "1\\n2\\n3")
 })
+
+test_that("interpret works for function with return", {
+  tokens <- scan_tokens('fun sayHi(first, last) {return "Hi, " + first + " " + last + "!";} print sayHi("bobby", "z");')
+  p <- parse_tokens(tokens)
+  expect_output(interpret(p), "Hi, bobby z!")
+})
+
+test_that("interpret works with closure", {
+  tokens <- scan_tokens('fun makeCounter() {var i = 0; fun count() {i = i + 1; print i;} return count;} var counter = makeCounter(); counter(); counter();')
+  p <- parse_tokens(tokens)
+  expect_output(interpret(p), "1\\n2")
+})

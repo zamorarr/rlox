@@ -21,3 +21,14 @@ lox_runtime_error <- function(message, token) {
   message <-  sprintf("[runtime error] at line %i: %s", token$line, message)
   lox_error2("runtime_error", message = message)
 }
+
+# not technically an error, but we use it as one to immediately
+# stop and return back to the calling context
+lox_return <- function(value) {
+  r <- structure(
+    list(value = value, call = NULL),
+    class = c("return", "condition")
+  )
+
+  stop(r)
+}
