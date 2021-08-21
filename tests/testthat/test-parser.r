@@ -101,3 +101,11 @@ test_that("parse_tokens works on function call", {
 
   expect_identical(actual, expected)
 })
+
+test_that("parse_tokens works on function declaration", {
+  actual <- parse_tokens(scan_tokens("fun f(x,y) {x + y;}"))
+  expected <- list(
+
+  )
+  expect_identical(actual, expected)
+})

@@ -1,11 +1,59 @@
 parse_declaration <- function(tokens) {
   token <- tokens[[1]]
+
+  if (token$type == token_type$FUN) {
+    return(parse_fundeclaration(tokens[-1], "function"))
+  }
+
   if (token$type == token_type$VAR) {
     return(parse_vardeclaration(tokens[-1]))
   }
 
   # parse statement
   parse_statement(tokens)
+}
+
+parse_fundeclaration <- function(tokens, kind) {
+  # get name
+  name <- tokens[[1]]
+  tokens <- consume(tokens, token_type$IDENTIFIER)
+
+  # consume left paren
+  tokens <- consume(tokens, token_type$LEFT_PAREN)
+
+  # get params
+  parameters <- list()
+  if (!is_type(tokens[[1]], token_type$RIGHT_PAREN)) {
+    while(TRUE) {
+      if (length(parameters) >= 255) {
+        lox_parser_error("Cannot have more than 255 parameters", tokens[[1]]$line)
+      }
+
+      # add parameter
+      token <- tokens[[1]]
+      tokens <- consume(tokens, token_type$IDENTIFIER)
+      parameters <- c(parameters, list(token))
+
+      # check if done
+      if (!is_type(tokens[[1]], token_type$COMMA)) break
+      tokens <- consume(tokens, token_type$COMMA)
+    }
+  }
+
+  # consume right paren
+  tokens <- consume(tokens, token_type$RIGHT_PAREN)
+
+  # consume left brace
+  tokens <- consume(tokens, token_type$LEFT_BRACE)
+
+  # get body
+  p <- parse_statement_block(tokens)
+  body <- p$stmt
+  #body <- stmt_block(body)
+  tokens <- p$tokens
+
+  # return
+  list(stmt = stmt_function(name, parameters, body), tokens = tokens)
 }
 
 parse_vardeclaration <- function(tokens) {

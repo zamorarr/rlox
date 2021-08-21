@@ -17,6 +17,15 @@ stmt_expression <- function(expression) {
   stmt(x, "lox_stmt_expression")
 }
 
+#' Function Declaration
+#' @param name token
+#' @param params list of tokens
+#' @param body list of statements
+stmt_function <- function(name, params, body) {
+  x <- list(name = name, params = params, body = body)
+  stmt(x, "lox_stmt_function")
+}
+
 #' If Statement
 #' @param condition expression
 #' @param then_branch statement
@@ -63,7 +72,7 @@ format.lox_stmt_block <- function(x, pad = 0, ...) {
   dash <- paste(rep("-", pad), collapse = "")
   s <- sprintf("%s||-`{`", dash)
   for (stmt in x$statements) {
-    s <- paste0(s, sprintf("\n%s", format(stmt, pad = pad + 1L)))
+    s <- paste0(s, sprintf("\n%s|-%s", dash, format(stmt, pad = pad + 1L)))
   }
   s
 }
@@ -71,6 +80,24 @@ format.lox_stmt_block <- function(x, pad = 0, ...) {
 #' @export
 format.lox_stmt_expression <- function(x, pad = 0, ...) {
   format(x$expression, pad = pad)
+}
+
+#' @export
+format.lox_stmt_function <- function(x, pad = 0, ...) {
+  #name, params, body
+  dash <- paste(rep("-", pad), collapse = "")
+  s <- sprintf("%s||-fun %s", dash, format(x$name$lexeme, pad = pad))
+
+  # params
+  for (param in x$params) {
+    s <- paste0(s, sprintf("\n%s|-%s", dash, format(param, pad = pad + 1L)))
+  }
+
+  # block
+  s <- paste0(s, sprintf("\n%s|-%s", dash, format(x$body, pad = pad + 1L)))
+
+  s
+
 }
 
 #' @export

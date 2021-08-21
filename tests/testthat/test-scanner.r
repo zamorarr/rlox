@@ -102,3 +102,25 @@ test_that("scan_tokens works on a function call", {
 
   expect_identical(actual, expected)
 })
+
+test_that("scan_tokens works a function declaration", {
+  actual <- scan_tokens("fun f(x,y) {x + y;}")
+  expected <- list(
+    token(token_type$FUN, "fun"),
+    token(token_type$IDENTIFIER, "f"),
+    token(token_type$LEFT_PAREN, token_symbol$LEFT_PAREN),
+    token(token_type$IDENTIFIER, "x"),
+    token(token_type$COMMA, token_symbol$COMMA),
+    token(token_type$IDENTIFIER, "y"),
+    token(token_type$RIGHT_PAREN, token_symbol$RIGHT_PAREN),
+    token(token_type$LEFT_BRACE, token_symbol$LEFT_BRACE),
+    token(token_type$IDENTIFIER, "x"),
+    token(token_type$PLUS, token_symbol$PLUS),
+    token(token_type$IDENTIFIER, "y"),
+    token(token_type$SEMICOLON, token_symbol$SEMICOLON),
+    token(token_type$RIGHT_BRACE, token_symbol$RIGHT_BRACE),
+    token(token_type$EOF, token_symbol$EOF)
+  )
+
+  expect_identical(actual, expected)
+})
