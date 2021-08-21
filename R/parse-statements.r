@@ -49,8 +49,13 @@ parse_fundeclaration <- function(tokens, kind) {
   # get body
   p <- parse_statement_block(tokens)
   body <- p$stmt
-  #body <- stmt_block(body) # we don't want body wrapped in stmt_block? why not?
   tokens <- p$tokens
+
+  # body <- stmt_block(body) # we don't want body wrapped in stmt_block? why not?
+  # this is why: https://github.com/munificent/craftinginterpreters/blob/master/note/answers/chapter10_functions.md
+  # Lox uses the same scope for the parameters and local variables immediately inside the body.
+  # That's why Stmt.Function stores the body as a list of statements, not a single Stmt.
+  # Block that would create its own nested scope separate from the parameters.
 
   # return
   list(stmt = stmt_function(name, parameters, body), tokens = tokens)
