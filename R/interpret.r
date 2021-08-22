@@ -15,7 +15,7 @@ interpret <- function(statements, env = NULL) {
 
   # evaluate statements in environment
   for (statement in statements) {
-    evaluate(statement, env)
+    execute(statement, env)
   }
 
   # debug show env
@@ -26,8 +26,6 @@ interpret <- function(statements, env = NULL) {
   invisible(env)
 }
 
-#' @export
-evaluate <- function(x, env) UseMethod("evaluate")
 
 is_truthy <- function(x) {
   if (x == "nil") return(FALSE)

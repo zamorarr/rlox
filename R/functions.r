@@ -36,9 +36,7 @@ lox_call.lox_function <- function(fn, arguments, env) {
 
     # evaluate each statement and return NULL if no return statement
     {
-      for (statement in declaration$body) {
-        evaluate(statement, env)
-      }
+      execute_block(declaration$body, env)
       return(NULL)
     }
   )

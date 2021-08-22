@@ -1,4 +1,7 @@
 #' @export
+evaluate <- function(x, env) UseMethod("evaluate")
+
+#' @export
 evaluate.lox_expr_literal <- function(x, env) {
   x$value
 }
