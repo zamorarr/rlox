@@ -3,6 +3,8 @@ expr <- function(x, subclass) {
   structure(x, class = c(subclass, "lox_expr", class(x)))
 }
 
+is_expr <- function(x) inherits(x, "lox_expr")
+
 #' @param name token
 #' @param value expression
 #' @rdname expr

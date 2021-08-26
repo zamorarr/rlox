@@ -3,6 +3,8 @@ stmt <- function(x, subclass) {
   structure(x, class = c(subclass, "lox_stmt", class(x)))
 }
 
+is_stmt <- function(x) inherits(x, "lox_stmt")
+
 #' @param statements list of statements
 #' @rdname stmt
 stmt_block <- function(statements) {

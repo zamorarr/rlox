@@ -17,7 +17,7 @@ test_that("parse_tokens works for if statement", {
     else_branch = stmt_expression(expr_variable(token_y))
   ))
 
-  expect_identical(actual, expected)
+  expect_identical(actual, expected, ignore_attr = TRUE)
 })
 
 test_that("parse_tokens works for or expression", {
@@ -29,7 +29,7 @@ test_that("parse_tokens works for or expression", {
     right = expr_variable(token(token_type$IDENTIFIER, "b"))
   )))
 
-  expect_identical(actual, expected)
+  expect_identical(actual, expected, ignore_attr = TRUE)
 })
 
 test_that("parse_tokens works for and expression", {
@@ -41,7 +41,7 @@ test_that("parse_tokens works for and expression", {
     right = expr_variable(token(token_type$IDENTIFIER, "b"))
   )))
 
-  expect_identical(actual, expected)
+  expect_identical(actual, expected, ignore_attr = TRUE)
 })
 
 test_that("parse_tokens works for while statement", {
@@ -52,7 +52,7 @@ test_that("parse_tokens works for while statement", {
     body = stmt_expression(expr_variable(token(token_type$IDENTIFIER, "y")))
   ))
 
-  expect_identical(actual, expected)
+  expect_identical(actual, expected, ignore_attr = TRUE)
 })
 
 test_that("parse_tokens converts for loop to while loop", {
@@ -84,7 +84,7 @@ test_that("parse_tokens converts for loop to while loop", {
     )
   )))
 
-  expect_identical(actual, expected)
+  expect_identical(actual, expected, ignore_attr = TRUE)
 })
 
 test_that("parse_tokens works on function call", {
@@ -118,7 +118,7 @@ test_that("parse_tokens works on function declaration", {
     )))
   ))
 
-  expect_identical(actual, expected)
+  expect_identical(actual, expected, ignore_attr = TRUE)
 })
 
 test_that("parse_tokens works on function declation with return statement", {
@@ -139,5 +139,5 @@ test_that("parse_tokens works on function declation with return statement", {
     ))
   ))
 
-  expect_identical(actual, expected)
+  expect_identical(actual, expected, ignore_attr = TRUE)
 })
