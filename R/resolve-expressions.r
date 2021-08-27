@@ -1,5 +1,5 @@
 
-resolve.lox_expr_assign <- function(x, r) {
+resolve.lox_expr_assignment <- function(x, r) {
   resolve(x$value, r)
   resolve_local(x, x$name, r)
   invisible(r)

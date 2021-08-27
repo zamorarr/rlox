@@ -1,4 +1,9 @@
-interpret <- function(statements, env = NULL) {
+#' Interpret lox statements
+#'
+#' @param statements list from \code{parse_tokens}
+#' @param locals hashmap from \code{resolver}
+#' @param env global environment
+interpret <- function(statements, locals, env = NULL) {
   # create environment if it doesn't exist
   #env <- rlang::new_environment()
   if (is.null(env)) env <- env_new()
@@ -13,16 +18,19 @@ interpret <- function(statements, env = NULL) {
     )
   }
 
+  # create interpreter object
+  interpreter <- list(env_global = env, env_cur = env, locals = locals)
+  class(interpreter) <- c("lox_interpreter", class(interpreter))
+
   # evaluate statements in environment
   for (statement in statements) {
-    execute(statement, env)
+    execute(statement, interpreter)
   }
 
   # debug show env
   #rlang::env_print(env)
 
   # return env? not necessary because env is modified in place
-  #env
   invisible(env)
 }
 

@@ -28,7 +28,7 @@ enumerate_tree <- function(tree, id = 1L) {
     # what about inhereting list of statements?
     if (is_node(branch) || is_list_of_nodes(branch)) {
       # add id to statement/expression
-      attr(branch, "id") <- id
+      attr(branch, "id") <- as.character(id)
       # branch$id <- id
 
       # recurse down the tree (incrementing id)

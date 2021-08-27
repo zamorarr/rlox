@@ -1,51 +1,61 @@
 test_that("interpreter throws error for undefined variable", {
   tokens <- scan_tokens("d;")
-  p <- parse_tokens(tokens)
-  expect_error(interpret(p))
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_error(interpret(statements, locals))
 })
 
 test_that("interpreter works for if statement", {
   x <- 'var a = 3; var b = 4;if (a > b) print "a bigger"; else print "a not bigger";'
   tokens <- scan_tokens(x)
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "a not bigger")
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "a not bigger")
 })
 
 
 test_that("interpreter works for OR expression", {
   tokens <- scan_tokens('print nil or "yes";')
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "yes")
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "yes")
 
   tokens <- scan_tokens('print true or false;')
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "true")
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "true")
 })
 
 test_that("interpreter works for AND expression", {
   tokens <- scan_tokens('print nil and "yes";')
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "nil")
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "nil")
 
   tokens <- scan_tokens('print 1 < 2 and 10 > 3;')
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "true")
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "true")
 })
 
 test_that("interpret works for WHILE statement", {
   tokens <- scan_tokens('var i = 1; while (i <= 3) {print i; i = i + 1;}')
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "1\\n2\\n3")
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "1\\n2\\n3")
 })
 
 test_that("interpret works for function with return", {
-  tokens <- scan_tokens('fun sayHi(first, last) {return "Hi, " + first + " " + last + "!";} print sayHi("bobby", "z");')
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "Hi, bobby z!")
+  x <- 'fun sayHi(first, last) {return "Hi, " + first + " " + last + "!";} print sayHi("bobby", "z");'
+  tokens <- scan_tokens(x)
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "Hi, bobby z!")
 })
 
 test_that("interpret works with closure", {
   tokens <- scan_tokens('fun makeCounter() {var i = 0; fun count() {i = i + 1; print i;} return count;} var counter = makeCounter(); counter(); counter();')
-  p <- parse_tokens(tokens)
-  expect_output(interpret(p), "1\\n2")
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "1\\n2")
 })

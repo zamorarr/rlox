@@ -10,7 +10,7 @@
 \usage{
 env_new(parent = emptyenv())
 
-env_get(env, token)
+env_get(env, token, inherits = TRUE)
 
 env_define(env, name, value)
 
@@ -24,6 +24,8 @@ env_assign(env, token, value)
 \item{env}{lox environment}
 
 \item{token}{token}
+
+\item{inherits}{if not found in env, should look at parent envs?}
 
 \item{name}{string}
 

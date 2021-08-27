@@ -1,11 +1,11 @@
-resolver <- function(tree) {
+resolve_statements <- function(statements) {
   # create resolver object
   #r <- list(tree = tree, scopes = Stack$new(), locals = HashMap$new())
   r <- list(scopes = Stack$new(), locals = HashMap$new())
   r <- structure(r, class = c("lox_resolver", class(r)))
 
-  resolve_list(tree, r)
-  r
+  resolve_list(statements, r)
+  r$locals
 }
 
 is_node <- function(x) is_stmt(x) || is_expr(x)
@@ -34,7 +34,7 @@ resolve_local <- function(expr, name, r) {
   scopes <- r$scopes
   for (i in rev(seq_len(scopes$size))) {
     if (scopes$get(i)$has(name$lexeme)) {
-      id <- as.character(attr(expr, "id"))
+      id <- attr(expr, "id")
       r$locals$put(id, scopes$size - i + 1L)
       break
     }

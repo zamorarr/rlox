@@ -8,8 +8,9 @@ env_new <- function(parent = emptyenv()) {
 
 #' @param env lox environment
 #' @param token token
+#' @param inherits if not found in env, should look at parent envs?
 #' @rdname env_new
-env_get <- function(env, token) {
+env_get <- function(env, token, inherits = TRUE) {
   # check that token is type variable
   if (!token$type %in% c(token_type$VAR, token_type$IDENTIFIER)) {
     msg <- sprintf("Cannot get variable `%s` from environment", token$lexeme)
@@ -20,13 +21,18 @@ env_get <- function(env, token) {
   name <- token$lexeme
 
   # check if name exists in environment (or any parent)
-  if (!exists(name, envir = env, inherits = TRUE)) {
+  if (!exists(name, envir = env, inherits = inherits)) {
     msg <- sprintf("Undefined variable '%s'", name)
     lox_runtime_error(msg, token)
   }
 
   # get and return value for name
-  get(name, envir = env, inherits = TRUE)
+  get(name, envir = env, inherits = inherits)
+}
+
+env_get_at <- function(env, token, depth) {
+  if (depth <= 1L) return(env_get(env, token, inherits = FALSE))
+  env_get_at(parent.env(env), token, depth - 1L)
 }
 
 #' @param env lox environment
@@ -65,4 +71,9 @@ env_assign <- function(env, token, value) {
   }
 
   lox_runtime_error(sprintf("Undefined variable `%`.", name))
+}
+
+env_assign_at <- function(env, token, value, depth) {
+  if (depth <= 1L) return(env_assign(env, token, value))
+  env_assign_at(parent.env(env), token, value, depth - 1L)
 }

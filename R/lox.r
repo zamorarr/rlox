@@ -78,8 +78,8 @@ run.lox <- function(obj, line) {
   # scan tokens
   tokens <- scan_tokens(line)
   statements <- parse_tokens(tokens)
-  #obj$env <- interpret(statements, obj$env)
-  interpret(statements, obj$env)
+  locals <- resolve_statements(statements)
+  interpret(statements, locals, obj$env)
 
   # return object
   obj

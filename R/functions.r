@@ -16,7 +16,7 @@ lox_function <- function(declaration, closure) {
   structure(x, class = c("lox_function", class(x)))
 }
 
-lox_call.lox_function <- function(fn, arguments, env) {
+lox_call.lox_function <- function(fn, arguments, interpreter) {
   # we actually ignore the calling environment and instead use the closure
   env <- env_new(fn$closure)
 
@@ -28,6 +28,8 @@ lox_call.lox_function <- function(fn, arguments, env) {
     env_define(env, name = declaration$params[[i]]$lexeme, value = arguments[[i]])
   }
 
+  interpreter$env_cur <- env
+
   # should we be evaluating the body as a statement block?
   #evaluate(stmt_block(declaration$body), env)
   res <- tryCatch(
@@ -36,7 +38,11 @@ lox_call.lox_function <- function(fn, arguments, env) {
 
     # evaluate each statement and return NULL if no return statement
     {
-      execute_block(declaration$body, env)
+      # this should be interpreter, not env!
+      #execute_block(declaration$body, interpreter)
+      for (statement in declaration$body) {
+        execute(statement, interpreter)
+      }
       return(NULL)
     }
   )
