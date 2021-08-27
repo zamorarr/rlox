@@ -16,7 +16,7 @@ resolve.lox_stmt_function <- function(x, r) {
   declare(x$name, r)
   define(x$name, r)
 
-  resolve_function(x, r)
+  resolve_function(x, function_type$FUNCTION, r)
   invisible(r)
 }
 
@@ -33,6 +33,12 @@ resolve.lox_stmt_print <- function(x, r) {
 }
 
 resolve.lox_stmt_return <- function(x, r) {
+  # check if inside a function
+  if (identical(r$fun_type, function_type$NONE)) {
+    lox_resolver_error("Cannot return from top-level code", x$keyword$line)
+  }
+
+  # check if has value
   if (!is.null(x$value)) resolve(x$value, r)
   invisible(r)
 }

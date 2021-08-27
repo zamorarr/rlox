@@ -53,13 +53,6 @@ run_prompt.lox <- function(obj) {
       # statement
       run.lox(obj, line),
 
-      # runtime errors
-      runtime_error = function(cnd) {
-        message(conditionMessage(cnd))
-        obj$had_error <- TRUE
-        obj
-      },
-
       # other errors
       error = function(cnd) {
         message(conditionMessage(cnd))

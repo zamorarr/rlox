@@ -66,3 +66,7 @@ token_symbol <- list(
   # other
   "EOF" = ""
 )
+
+function_type <- create_enum(c(
+  "NONE", "FUNCTION"
+))

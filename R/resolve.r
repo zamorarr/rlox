@@ -1,7 +1,7 @@
 resolve_statements <- function(statements) {
   # create resolver object
   #r <- list(tree = tree, scopes = Stack$new(), locals = HashMap$new())
-  r <- list(scopes = Stack$new(), locals = HashMap$new())
+  r <- list(scopes = Stack$new(), locals = HashMap$new(), fun_type = function_type$NONE)
   r <- structure(r, class = c("lox_resolver", class(r)))
 
   resolve_list(statements, r)
@@ -43,7 +43,13 @@ resolve_local <- function(expr, name, r) {
   invisible(r)
 }
 
-resolve_function <- function(fun, r) {
+resolve_function <- function(fun, type = names(function_type), r) {
+  type <- match.arg(type)
+
+  # set function type
+  enclosing_fun_type <- r$fun_type
+  r$fun_type <- type
+
   # open scope
   begin_scope(r)
 
@@ -58,6 +64,9 @@ resolve_function <- function(fun, r) {
 
   # close scope
   end_scope(r)
+
+  # restore function type
+  r$fun_type <- enclosing_fun_type
   invisible(r)
 }
 
@@ -74,9 +83,17 @@ end_scope <- function(resolver) {
 # declare token in scope
 declare <- function(name, r) {
   if (r$scopes$is_empty()) return(invisible(r))
-
   scope <- r$scopes$peek()
+
+  # check if name declared already
+  if (scope$has(name$lexeme)) {
+    lox_resolver_error(sprintf("Already a variable `%s` in this scope", name$lexeme), name$line)
+  }
+
+  # declare name in scope
   scope$put(name$lexeme, FALSE)
+
+  # return r
   invisible(r)
 }
 
