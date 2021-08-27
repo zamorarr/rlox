@@ -59,3 +59,11 @@ test_that("interpret works with closure", {
   locals <- resolve_statements(statements)
   expect_output(interpret(statements, locals), "1\\n2")
 })
+
+test_that("interpret resolves closure correctly", {
+  x <- 'var a = "global"; {fun showA() {print a;} showA(); var a = "block"; showA();}'
+  tokens <- scan_tokens(x)
+  statements <- parse_tokens(tokens)
+  locals <- resolve_statements(statements)
+  expect_output(interpret(statements, locals), "global\\nglobal")
+})
